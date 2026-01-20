@@ -1,15 +1,14 @@
 using SampleSystemDesign.ScalingReads.Application.Interfaces;
-using SampleSystemDesign.ScalingReads.Application.UseCases;
 using SampleSystemDesign.ScalingReads.Domain.Entities;
 using SampleSystemDesign.ScalingReads.Domain.Interfaces;
 using SampleSystemDesign.ScalingReads.Infrastructure.ExternalServices;
 
-namespace SampleSystemDesign.ScalingReads.Tests;
+namespace SampleSystemDesign.ScalingReads.Tests.Infrastructure.ExternalServices;
 
-public class ScalingReadsTests
+public class RedisShortUrlCacheTests
 {
     [Fact]
-    public async Task RedisCache_ReturnsCachedValueWithoutDatabaseCall()
+    public async Task GetByShortCodeAsync_ReturnsCachedValueWithoutDatabaseCall()
     {
         var clock = new FakeClock(DateTimeOffset.UtcNow);
         var cache = new InMemoryShortUrlCache(TimeSpan.FromMinutes(5));
@@ -27,7 +26,7 @@ public class ScalingReadsTests
     }
 
     [Fact]
-    public async Task RedisCache_PopulatesCacheOnMiss()
+    public async Task GetByShortCodeAsync_PopulatesCacheOnMiss()
     {
         var clock = new FakeClock(DateTimeOffset.UtcNow);
         var cache = new InMemoryShortUrlCache(TimeSpan.FromMinutes(5));
@@ -43,40 +42,6 @@ public class ScalingReadsTests
         Assert.NotNull(first);
         Assert.NotNull(second);
         Assert.Equal(1, database.GetCalls);
-    }
-
-    [Fact]
-    public async Task Handler_ReturnsNotFoundWhenExpired()
-    {
-        var now = DateTimeOffset.UtcNow;
-        var clock = new FakeClock(now);
-        var repository = new FakeShortUrlRepository();
-        var expired = new ShortUrl(Guid.NewGuid(), "https://example.com/old", "old", now.AddMinutes(-1));
-        repository.Save(expired);
-
-        var handler = new GetOriginalUrlQueryHandler(repository, clock);
-
-        var result = await handler.HandleAsync(new GetOriginalUrlQuery("old"));
-
-        Assert.False(result.Found);
-        Assert.Null(result.OriginalUrl);
-    }
-
-    [Fact]
-    public async Task Handler_ReturnsOriginalUrlWhenActive()
-    {
-        var now = DateTimeOffset.UtcNow;
-        var clock = new FakeClock(now);
-        var repository = new FakeShortUrlRepository();
-        var active = new ShortUrl(Guid.NewGuid(), "https://example.com/active", "active", now.AddMinutes(5));
-        repository.Save(active);
-
-        var handler = new GetOriginalUrlQueryHandler(repository, clock);
-
-        var result = await handler.HandleAsync(new GetOriginalUrlQuery("active"));
-
-        Assert.True(result.Found);
-        Assert.Equal(active.OriginalUrl, result.OriginalUrl);
     }
 
     private sealed class FakeClock : IClock

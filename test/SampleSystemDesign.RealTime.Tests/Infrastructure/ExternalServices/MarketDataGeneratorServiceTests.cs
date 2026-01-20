@@ -2,12 +2,12 @@ using SampleSystemDesign.RealTime.Application.Interfaces;
 using SampleSystemDesign.RealTime.Domain.ValueObjects;
 using SampleSystemDesign.RealTime.Infrastructure.ExternalServices;
 
-namespace SampleSystemDesign.RealTime.Tests;
+namespace SampleSystemDesign.RealTime.Tests.Infrastructure.ExternalServices;
 
-public class RealTimeTests
+public class MarketDataGeneratorServiceTests
 {
     [Fact]
-    public async Task Generator_PublishesMarketData()
+    public async Task ExecuteAsync_PublishesMarketData()
     {
         var publisher = new FakeMarketDataPublisher();
         var generator = new MarketDataGeneratorService(publisher, TimeSpan.FromMilliseconds(10));
@@ -18,12 +18,6 @@ public class RealTimeTests
         await generator.StopAsync(CancellationToken.None);
 
         Assert.NotEmpty(publisher.Published);
-    }
-
-    [Fact]
-    public void MarketData_RequiresValidSymbol()
-    {
-        Assert.Throws<ArgumentException>(() => MarketData.Create(" ", 10m, 1m));
     }
 
     private sealed class FakeMarketDataPublisher : IMarketDataPublisher

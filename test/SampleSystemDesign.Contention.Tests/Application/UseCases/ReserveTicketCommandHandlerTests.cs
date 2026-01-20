@@ -5,12 +5,12 @@ using SampleSystemDesign.Contention.Domain.Entities;
 using SampleSystemDesign.Contention.Infrastructure.ExternalServices;
 using SampleSystemDesign.Contention.Infrastructure.Persistence;
 
-namespace SampleSystemDesign.Contention.Tests;
+namespace SampleSystemDesign.Contention.Tests.Application.UseCases;
 
-public class ContentionTests
+public class ReserveTicketCommandHandlerTests
 {
     [Fact]
-    public async Task Handler_ReservesTicket_WhenAvailable()
+    public async Task HandleAsync_ReservesTicket_WhenAvailable()
     {
         var eventId = Guid.NewGuid();
         var inventory = new TicketInventory(Guid.NewGuid(), eventId, 10, 10, 0);
@@ -33,7 +33,7 @@ public class ContentionTests
     }
 
     [Fact]
-    public async Task Handler_ReturnsSoldOut_WhenInventoryIsEmpty()
+    public async Task HandleAsync_ReturnsSoldOut_WhenInventoryIsEmpty()
     {
         var eventId = Guid.NewGuid();
         var inventory = new TicketInventory(Guid.NewGuid(), eventId, 1, 0, 0);
@@ -50,20 +50,6 @@ public class ContentionTests
 
         Assert.Equal(ReservationStatus.SoldOut, result.Status);
         Assert.Null(result.Reservation);
-    }
-
-    [Fact]
-    public async Task Repository_ReturnsFalse_OnOptimisticLockConflict()
-    {
-        var eventId = Guid.NewGuid();
-        var inventory = new TicketInventory(Guid.NewGuid(), eventId, 5, 5, 2);
-        var repository = new InMemoryTicketInventoryRepository();
-        repository.Seed(new[] { inventory });
-        var updated = new TicketInventory(inventory.Id, eventId, 5, 4, 3);
-
-        var result = await repository.TryUpdateAsync(updated, expectedVersion: 1);
-
-        Assert.False(result);
     }
 
     private sealed class FakeClock : IClock

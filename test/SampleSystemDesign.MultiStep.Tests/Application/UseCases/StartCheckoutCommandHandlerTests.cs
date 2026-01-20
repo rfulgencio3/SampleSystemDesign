@@ -5,12 +5,12 @@ using SampleSystemDesign.MultiStep.Domain.Entities;
 using SampleSystemDesign.MultiStep.Infrastructure.ExternalServices;
 using SampleSystemDesign.MultiStep.Infrastructure.Persistence;
 
-namespace SampleSystemDesign.MultiStep.Tests;
+namespace SampleSystemDesign.MultiStep.Tests.Application.UseCases;
 
-public class MultiStepTests
+public class StartCheckoutCommandHandlerTests
 {
     [Fact]
-    public async Task Handler_CompletesOrder_WhenAllStepsSucceed()
+    public async Task HandleAsync_CompletesOrder_WhenAllStepsSucceed()
     {
         var repository = new InMemoryOrderRepository();
         var payment = new FakePaymentService(true);
@@ -36,50 +36,6 @@ public class MultiStepTests
         Assert.Equal(1, inventory.ReserveCalls);
         Assert.Equal(0, inventory.ReleaseCalls);
         Assert.Equal(1, notifications.ConfirmedCalls);
-    }
-
-    [Fact]
-    public async Task Orchestrator_RefundsPayment_WhenInventoryFails()
-    {
-        var repository = new InMemoryOrderRepository();
-        var payment = new FakePaymentService(true);
-        var inventory = new FakeInventoryService(false);
-        var notifications = new FakeNotificationService(true);
-        var messageBus = new FakeMessageBus();
-        var orchestrator = new CheckoutSagaOrchestrator(repository, payment, inventory, notifications, messageBus);
-
-        var items = new[] { new OrderItem("sku-1", 1, 20m) };
-        var order = new Order(Guid.NewGuid(), OrderStatus.Pending, items, 20m);
-        await repository.SaveAsync(order);
-
-        var result = await orchestrator.StartAsync(order);
-
-        Assert.Equal(OrderStatus.Failed, result.Status);
-        Assert.Equal(1, payment.RefundCalls);
-        Assert.Equal(0, inventory.ReleaseCalls);
-        Assert.Equal(1, notifications.FailedCalls);
-    }
-
-    [Fact]
-    public async Task Orchestrator_ReleasesInventory_WhenNotificationFails()
-    {
-        var repository = new InMemoryOrderRepository();
-        var payment = new FakePaymentService(true);
-        var inventory = new FakeInventoryService(true);
-        var notifications = new FakeNotificationService(false);
-        var messageBus = new FakeMessageBus();
-        var orchestrator = new CheckoutSagaOrchestrator(repository, payment, inventory, notifications, messageBus);
-
-        var items = new[] { new OrderItem("sku-1", 1, 12m) };
-        var order = new Order(Guid.NewGuid(), OrderStatus.Pending, items, 12m);
-        await repository.SaveAsync(order);
-
-        var result = await orchestrator.StartAsync(order);
-
-        Assert.Equal(OrderStatus.Failed, result.Status);
-        Assert.Equal(1, payment.RefundCalls);
-        Assert.Equal(1, inventory.ReleaseCalls);
-        Assert.Equal(1, notifications.FailedCalls);
     }
 
     private sealed class FakePaymentService : IPaymentService
