@@ -81,3 +81,98 @@ dotnet run --project src/SampleSystemDesign.ScalingReads
 - LargeFiles: `POST /api/assets/upload-url` then `GET /api/assets/{assetId}/download-url`.
 - Contention: `POST /api/reserve` with `EventId` and `UserId`.
 - MultiStep: `POST /api/checkout/start` with item list.
+
+## Environment Variables by Project
+All projects read from `appsettings.json`, but you can override with environment variables.
+
+### ScalingReads (`src/SampleSystemDesign.ScalingReads`)
+- `ConnectionStrings__Postgres`
+- `Redis__ConnectionString`
+- `Redis__InstanceName`
+- `Caching__DefaultTtlMinutes`
+
+### ScalingWrites (`src/SampleSystemDesign.ScalingWrites`)
+- `ConnectionStrings__Postgres`
+- `RabbitMq__HostName`
+- `RabbitMq__Port`
+- `RabbitMq__UserName`
+- `RabbitMq__Password`
+- `RabbitMq__Queue`
+- `Telemetry__ShardCount`
+- `Telemetry__BatchSize`
+
+### Contention (`src/SampleSystemDesign.Contention`)
+- `ConnectionStrings__Postgres`
+- `Reservation__HoldMinutes`
+
+### LargeFiles (`src/SampleSystemDesign.LargeFiles`)
+- `ConnectionStrings__Postgres`
+- `Minio__Endpoint`
+- `Minio__AccessKey`
+- `Minio__SecretKey`
+- `Minio__Bucket`
+- `Minio__Secure`
+- `Storage__UrlTtlMinutes`
+
+### LongRunning (`src/SampleSystemDesign.LongRunning`)
+- `ConnectionStrings__Postgres`
+- `RabbitMq__HostName`
+- `RabbitMq__Port`
+- `RabbitMq__UserName`
+- `RabbitMq__Password`
+- `RabbitMq__Queue`
+- `Processing__DelaySeconds`
+
+### MultiStep (`src/SampleSystemDesign.MultiStep`)
+- `ConnectionStrings__Postgres`
+- `RabbitMq__HostName`
+- `RabbitMq__Port`
+- `RabbitMq__UserName`
+- `RabbitMq__Password`
+- `RabbitMq__Queue`
+
+### RealTime (`src/SampleSystemDesign.RealTime`)
+- `MarketData__IntervalSeconds`
+
+## Test Scripts
+You can use these scripts after starting the shared infrastructure with `docker compose up -d`.
+
+### ScalingReads
+```bash
+curl http://localhost:5000/r/sched
+```
+
+### ScalingWrites
+```bash
+curl -X POST http://localhost:5000/api/telemetry \
+  -H "Content-Type: application/json" \
+  -d "{\"deviceId\":\"device-1\",\"metricName\":\"temp\",\"value\":21.5}"
+```
+
+### Contention
+```bash
+curl -X POST http://localhost:5000/api/reserve \
+  -H "Content-Type: application/json" \
+  -d "{\"eventId\":\"11111111-1111-1111-1111-111111111111\",\"userId\":\"user-1\"}"
+```
+
+### LargeFiles
+```bash
+curl -X POST http://localhost:5000/api/assets/upload-url \
+  -H "Content-Type: application/json" \
+  -d "{\"fileName\":\"photo.jpg\",\"contentType\":\"image/jpeg\",\"uploadedBy\":\"user-1\"}"
+```
+
+### LongRunning
+```bash
+curl -X POST http://localhost:5000/api/jobs \
+  -H "Content-Type: application/json" \
+  -d "{\"originalFileUrl\":\"https://files.example.com/image.jpg\"}"
+```
+
+### MultiStep
+```bash
+curl -X POST http://localhost:5000/api/checkout/start \
+  -H "Content-Type: application/json" \
+  -d "{\"items\":[{\"sku\":\"sku-1\",\"quantity\":2,\"unitPrice\":10},{\"sku\":\"sku-2\",\"quantity\":1,\"unitPrice\":5}]}"
+```
