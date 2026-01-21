@@ -10,4 +10,11 @@
     <PackageReference Include="Npgsql" Version="8.0.4" />
     <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="
+Swashbuckle.AspNetCore
+" Version="
+6.6.2
+" />
+  </ItemGroup>
 </Project>

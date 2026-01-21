@@ -73,6 +73,10 @@ Run a specific project (example):
 dotnet run --project src/SampleSystemDesign.ScalingReads
 ```
 
+## Swagger
+All HTTP APIs expose Swagger UI at `/swagger` when `ASPNETCORE_ENVIRONMENT=Development` (default for local runs).
+Example: `http://localhost:5000/swagger`.
+
 ## Quick Manual Checks
 - ScalingReads: `GET /r/sched` (seeded in `Program.cs`).
 - ScalingWrites: `POST /api/telemetry` with JSON payload.

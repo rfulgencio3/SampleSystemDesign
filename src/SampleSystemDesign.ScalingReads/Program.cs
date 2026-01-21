@@ -6,8 +6,16 @@ using SampleSystemDesign.ScalingReads.Presentation;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScalingReads(builder.Configuration);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 await SeedDataAsync(app.Services);
 
@@ -24,3 +32,4 @@ static async Task SeedDataAsync(IServiceProvider services)
     await repository.SaveAsync(new ShortUrl(Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), "https://events.example.com/registration", "reg", now.AddDays(30)));
     await repository.SaveAsync(new ShortUrl(Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), "https://events.example.com/venue", "venue", null));
 }
+

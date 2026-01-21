@@ -6,8 +6,16 @@ using SampleSystemDesign.Contention.Presentation;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddContention(builder.Configuration);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 await SeedDataAsync(app.Services);
 
@@ -23,3 +31,4 @@ static async Task SeedDataAsync(IServiceProvider services)
     await repository.SaveAsync(new TicketInventory(Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), eventId, 100, 100, 0));
     await repository.SaveAsync(new TicketInventory(Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), Guid.Parse("22222222-2222-2222-2222-222222222222"), 50, 0, 0));
 }
+

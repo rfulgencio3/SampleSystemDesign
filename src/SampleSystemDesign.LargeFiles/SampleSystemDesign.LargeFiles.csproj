@@ -10,4 +10,11 @@
     <PackageReference Include="Npgsql" Version="8.0.4" />
     <PackageReference Include="Minio" Version="6.0.3" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="
+Swashbuckle.AspNetCore
+" Version="
+6.6.2
+" />
+  </ItemGroup>
 </Project>
