@@ -51,14 +51,9 @@ public class ImageProcessingWorkerTests
         throw new TimeoutException("Job did not reach the expected status in time.");
     }
 
-    private sealed class TestImageProcessor : IImageProcessor
+    private sealed class TestImageProcessor(string baseUrl) : IImageProcessor
     {
-        private readonly string baseUrl;
-
-        public TestImageProcessor(string baseUrl)
-        {
-            this.baseUrl = baseUrl.TrimEnd('/');
-        }
+        private readonly string baseUrl = baseUrl.TrimEnd('/');
 
         public int CallCount { get; private set; }
 

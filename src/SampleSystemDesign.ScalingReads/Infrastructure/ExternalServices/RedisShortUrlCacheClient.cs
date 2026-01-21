@@ -13,9 +13,9 @@ public sealed class RedisShortUrlCacheClient : IShortUrlCache
 
     public RedisShortUrlCacheClient(IConnectionMultiplexer connection, string instanceName, TimeSpan defaultTtl)
     {
-        if (connection is null) throw new ArgumentNullException(nameof(connection));
+        ArgumentNullException.ThrowIfNull(connection);
         if (string.IsNullOrWhiteSpace(instanceName)) throw new ArgumentException("Instance name is required.", nameof(instanceName));
-        if (defaultTtl <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(defaultTtl));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(defaultTtl, TimeSpan.Zero);
 
         database = connection.GetDatabase();
         prefix = instanceName.Trim() + ":";
@@ -37,7 +37,7 @@ public sealed class RedisShortUrlCacheClient : IShortUrlCache
             return false;
         }
 
-        var cached = JsonSerializer.Deserialize<CachedShortUrl>(value!, jsonOptions);
+        var cached = JsonSerializer.Deserialize<CachedShortUrl>(value.ToString(), jsonOptions);
         if (cached is null)
         {
             database.KeyDelete(prefix + shortCode);
@@ -73,3 +73,4 @@ public sealed class RedisShortUrlCacheClient : IShortUrlCache
 
     private sealed record CachedShortUrl(Guid Id, string OriginalUrl, string ShortCode, DateTimeOffset? ExpirationDate);
 }
+

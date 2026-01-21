@@ -15,7 +15,7 @@ public class ReserveTicketCommandHandlerTests
         var eventId = Guid.NewGuid();
         var inventory = new TicketInventory(Guid.NewGuid(), eventId, 10, 10, 0);
         var inventoryRepository = new InMemoryTicketInventoryRepository();
-        inventoryRepository.Seed(new[] { inventory });
+        inventoryRepository.Seed([inventory]);
         var reservationRepository = new InMemoryTicketReservationRepository();
         var clock = new FakeClock(DateTimeOffset.UtcNow);
         var window = new DefaultReservationWindow(TimeSpan.FromMinutes(2));
@@ -38,7 +38,7 @@ public class ReserveTicketCommandHandlerTests
         var eventId = Guid.NewGuid();
         var inventory = new TicketInventory(Guid.NewGuid(), eventId, 1, 0, 0);
         var inventoryRepository = new InMemoryTicketInventoryRepository();
-        inventoryRepository.Seed(new[] { inventory });
+        inventoryRepository.Seed([inventory]);
         var reservationRepository = new InMemoryTicketReservationRepository();
         var handler = new ReserveTicketCommandHandler(
             inventoryRepository,
@@ -52,13 +52,8 @@ public class ReserveTicketCommandHandlerTests
         Assert.Null(result.Reservation);
     }
 
-    private sealed class FakeClock : IClock
+    private sealed class FakeClock(DateTimeOffset utcNow) : IClock
     {
-        public FakeClock(DateTimeOffset utcNow)
-        {
-            UtcNow = utcNow;
-        }
-
-        public DateTimeOffset UtcNow { get; }
+        public DateTimeOffset UtcNow { get; } = utcNow;
     }
 }

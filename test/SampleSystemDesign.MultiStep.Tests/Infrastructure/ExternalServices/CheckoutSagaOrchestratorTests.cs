@@ -52,14 +52,9 @@ public class CheckoutSagaOrchestratorTests
         Assert.Equal(1, notifications.FailedCalls);
     }
 
-    private sealed class FakePaymentService : IPaymentService
+    private sealed class FakePaymentService(bool shouldSucceed) : IPaymentService
     {
-        private readonly bool shouldSucceed;
-
-        public FakePaymentService(bool shouldSucceed)
-        {
-            this.shouldSucceed = shouldSucceed;
-        }
+        private readonly bool shouldSucceed = shouldSucceed;
 
         public int CaptureCalls { get; private set; }
         public int RefundCalls { get; private set; }
@@ -77,14 +72,9 @@ public class CheckoutSagaOrchestratorTests
         }
     }
 
-    private sealed class FakeInventoryService : IInventoryService
+    private sealed class FakeInventoryService(bool shouldReserve) : IInventoryService
     {
-        private readonly bool shouldReserve;
-
-        public FakeInventoryService(bool shouldReserve)
-        {
-            this.shouldReserve = shouldReserve;
-        }
+        private readonly bool shouldReserve = shouldReserve;
 
         public int ReserveCalls { get; private set; }
         public int ReleaseCalls { get; private set; }
@@ -102,14 +92,9 @@ public class CheckoutSagaOrchestratorTests
         }
     }
 
-    private sealed class FakeNotificationService : INotificationService
+    private sealed class FakeNotificationService(bool shouldConfirm) : INotificationService
     {
-        private readonly bool shouldConfirm;
-
-        public FakeNotificationService(bool shouldConfirm)
-        {
-            this.shouldConfirm = shouldConfirm;
-        }
+        private readonly bool shouldConfirm = shouldConfirm;
 
         public int ConfirmedCalls { get; private set; }
         public int FailedCalls { get; private set; }
@@ -129,7 +114,7 @@ public class CheckoutSagaOrchestratorTests
 
     private sealed class FakeMessageBus : ICheckoutMessageBus
     {
-        public List<CheckoutMessage> Messages { get; } = new();
+        public List<CheckoutMessage> Messages { get; } = [];
 
         public Task PublishAsync(CheckoutMessage message, CancellationToken cancellationToken = default)
         {
