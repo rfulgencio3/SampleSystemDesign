@@ -3,7 +3,7 @@ using SampleSystemDesign.RealTime.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRealTime();
+builder.Services.AddRealTime(builder.Configuration);
 
 var app = builder.Build();
 

@@ -3,7 +3,7 @@ using SampleSystemDesign.LongRunning.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLongRunning();
+builder.Services.AddLongRunning(builder.Configuration);
 
 var app = builder.Build();
 

@@ -3,7 +3,7 @@ using SampleSystemDesign.MultiStep.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddMultiStep();
+builder.Services.AddMultiStep(builder.Configuration);
 
 var app = builder.Build();
 

@@ -3,7 +3,7 @@ using SampleSystemDesign.ScalingWrites.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScalingWrites();
+builder.Services.AddScalingWrites(builder.Configuration);
 
 var app = builder.Build();
 

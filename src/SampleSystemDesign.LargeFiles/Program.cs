@@ -3,7 +3,7 @@ using SampleSystemDesign.LargeFiles.Presentation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLargeFiles();
+builder.Services.AddLargeFiles(builder.Configuration);
 
 var app = builder.Build();
 
