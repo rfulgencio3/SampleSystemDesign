@@ -5,12 +5,12 @@ using Npgsql;
 using SampleSystemDesign.ScalingWrites.Domain.Entities;
 using SampleSystemDesign.ScalingWrites.Domain.Interfaces;
 
-public sealed class PostgresShardedTelemetryRepository : ITelemetryRepository
+public sealed class DatabaseShardedTelemetryRepository : ITelemetryRepository
 {
     private readonly string connectionString;
     private readonly int shardCount;
 
-    public PostgresShardedTelemetryRepository(string connectionString, int shardCount)
+    public DatabaseShardedTelemetryRepository(string connectionString, int shardCount)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {

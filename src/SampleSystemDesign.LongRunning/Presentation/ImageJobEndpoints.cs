@@ -1,9 +1,7 @@
-namespace SampleSystemDesign.LongRunning.Presentation;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using SampleSystemDesign.LongRunning.Application.UseCases;
 using SampleSystemDesign.LongRunning.Domain.Entities;
+
+namespace SampleSystemDesign.LongRunning.Presentation;
 
 public static class ImageJobEndpoints
 {

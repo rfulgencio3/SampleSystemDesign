@@ -1,18 +1,16 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.Configuration;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using SampleSystemDesign.LongRunning.Application.Interfaces;
 using SampleSystemDesign.LongRunning.Application.UseCases;
 using SampleSystemDesign.LongRunning.Domain.Interfaces;
 using SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
 using SampleSystemDesign.LongRunning.Infrastructure.Persistence;
 
+namespace SampleSystemDesign.LongRunning.Infrastructure.Configuration;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddLongRunning(this IServiceCollection services, IConfiguration configuration)
     {
-        if (configuration is null) throw new ArgumentNullException(nameof(configuration));
+        ArgumentNullException.ThrowIfNull(configuration);
 
         var connectionString = configuration.GetConnectionString("Postgres")
             ?? throw new InvalidOperationException("Postgres connection string is required.");
@@ -24,7 +22,7 @@ public static class DependencyInjection
         var queue = configuration["RabbitMq:Queue"] ?? "image.jobs";
         var delaySeconds = ParseInt(configuration["Processing:DelaySeconds"], 2);
 
-        services.AddSingleton<IImageJobRepository>(_ => new PostgresImageJobRepository(connectionString));
+        services.AddSingleton<IImageJobRepository>(_ => new DatabaseImageJobRepository(connectionString));
         services.AddSingleton<IImageJobQueue>(_ => new RabbitMqImageJobQueue(host, port, user, password, queue));
         services.AddSingleton<IImageProcessor>(_ => new SimulatedImageProcessor(TimeSpan.FromSeconds(delaySeconds), "https://images.example.com"));
         services.AddSingleton<SubmitImageJobCommandHandler>();

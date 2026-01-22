@@ -4,11 +4,11 @@ using Npgsql;
 using SampleSystemDesign.LargeFiles.Domain.Entities;
 using SampleSystemDesign.LargeFiles.Domain.Interfaces;
 
-public sealed class PostgresAssetRepository : IAssetRepository
+public sealed class DatabaseAssetRepository : IAssetRepository
 {
     private readonly string connectionString;
 
-    public PostgresAssetRepository(string connectionString)
+    public DatabaseAssetRepository(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
@@ -49,7 +49,7 @@ public sealed class PostgresAssetRepository : IAssetRepository
 
     public async Task SaveAsync(Asset asset, CancellationToken cancellationToken = default)
     {
-        if (asset is null) throw new ArgumentNullException(nameof(asset));
+        ArgumentNullException.ThrowIfNull(asset);
 
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);

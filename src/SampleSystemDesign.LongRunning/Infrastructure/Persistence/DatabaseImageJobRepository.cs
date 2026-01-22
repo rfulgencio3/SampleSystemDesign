@@ -1,14 +1,14 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.Persistence;
-
 using Npgsql;
 using SampleSystemDesign.LongRunning.Domain.Entities;
 using SampleSystemDesign.LongRunning.Domain.Interfaces;
 
-public sealed class PostgresImageJobRepository : IImageJobRepository
+namespace SampleSystemDesign.LongRunning.Infrastructure.Persistence;
+
+public sealed class DatabaseImageJobRepository : IImageJobRepository
 {
     private readonly string connectionString;
 
-    public PostgresImageJobRepository(string connectionString)
+    public DatabaseImageJobRepository(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
@@ -52,7 +52,7 @@ public sealed class PostgresImageJobRepository : IImageJobRepository
 
     public async Task SaveAsync(ImageJob job, CancellationToken cancellationToken = default)
     {
-        if (job is null) throw new ArgumentNullException(nameof(job));
+        ArgumentNullException.ThrowIfNull(job);
 
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);

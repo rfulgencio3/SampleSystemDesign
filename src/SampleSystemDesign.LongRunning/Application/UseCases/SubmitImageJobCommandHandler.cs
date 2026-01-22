@@ -1,24 +1,18 @@
-namespace SampleSystemDesign.LongRunning.Application.UseCases;
-
 using SampleSystemDesign.LongRunning.Application.DTOs;
 using SampleSystemDesign.LongRunning.Application.Interfaces;
 using SampleSystemDesign.LongRunning.Domain.Entities;
 using SampleSystemDesign.LongRunning.Domain.Interfaces;
 
-public sealed class SubmitImageJobCommandHandler
-{
-    private readonly IImageJobRepository repository;
-    private readonly IImageJobQueue queue;
+namespace SampleSystemDesign.LongRunning.Application.UseCases;
 
-    public SubmitImageJobCommandHandler(IImageJobRepository repository, IImageJobQueue queue)
-    {
-        this.repository = repository;
-        this.queue = queue;
-    }
+public sealed class SubmitImageJobCommandHandler(IImageJobRepository repository, IImageJobQueue queue)
+{
+    private readonly IImageJobRepository repository = repository;
+    private readonly IImageJobQueue queue = queue;
 
     public async Task<SubmitImageJobResult> HandleAsync(SubmitImageJobCommand command, CancellationToken cancellationToken = default)
     {
-        if (command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
         if (string.IsNullOrWhiteSpace(command.OriginalFileUrl))
         {
             throw new ArgumentException("Original file URL is required.", nameof(command));

@@ -1,19 +1,13 @@
-namespace SampleSystemDesign.LargeFiles.Application.UseCases;
-
 using SampleSystemDesign.LargeFiles.Application.DTOs;
 using SampleSystemDesign.LargeFiles.Application.Interfaces;
 using SampleSystemDesign.LargeFiles.Domain.Interfaces;
 
-public sealed class GenerateDownloadUrlQueryHandler
-{
-    private readonly IAssetRepository assetRepository;
-    private readonly IStorageService storageService;
+namespace SampleSystemDesign.LargeFiles.Application.UseCases;
 
-    public GenerateDownloadUrlQueryHandler(IAssetRepository assetRepository, IStorageService storageService)
-    {
-        this.assetRepository = assetRepository;
-        this.storageService = storageService;
-    }
+public sealed class GenerateDownloadUrlQueryHandler(IAssetRepository assetRepository, IStorageService storageService)
+{
+    private readonly IAssetRepository assetRepository = assetRepository;
+    private readonly IStorageService storageService = storageService;
 
     public async Task<DownloadUrlResult> HandleAsync(GenerateDownloadUrlQuery query, CancellationToken cancellationToken = default)
     {

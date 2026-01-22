@@ -1,14 +1,14 @@
-namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
-
 using Npgsql;
 using SampleSystemDesign.Contention.Domain.Entities;
 using SampleSystemDesign.Contention.Domain.Interfaces;
 
-public sealed class PostgresTicketInventoryRepository : ITicketInventoryRepository
+namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
+
+public sealed class DatabaseTicketInventoryRepository : ITicketInventoryRepository
 {
     private readonly string connectionString;
 
-    public PostgresTicketInventoryRepository(string connectionString)
+    public DatabaseTicketInventoryRepository(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
@@ -51,7 +51,7 @@ public sealed class PostgresTicketInventoryRepository : ITicketInventoryReposito
 
     public async Task SaveAsync(TicketInventory inventory, CancellationToken cancellationToken = default)
     {
-        if (inventory is null) throw new ArgumentNullException(nameof(inventory));
+        ArgumentNullException.ThrowIfNull(inventory);
 
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);
@@ -77,7 +77,7 @@ public sealed class PostgresTicketInventoryRepository : ITicketInventoryReposito
 
     public async Task<bool> TryUpdateAsync(TicketInventory updatedInventory, int expectedVersion, CancellationToken cancellationToken = default)
     {
-        if (updatedInventory is null) throw new ArgumentNullException(nameof(updatedInventory));
+        ArgumentNullException.ThrowIfNull(updatedInventory);
 
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);

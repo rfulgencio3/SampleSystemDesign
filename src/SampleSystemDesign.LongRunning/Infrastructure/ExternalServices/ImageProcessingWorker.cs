@@ -1,20 +1,13 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
-
 using SampleSystemDesign.LongRunning.Application.Interfaces;
 using SampleSystemDesign.LongRunning.Domain.Interfaces;
 
-public sealed class ImageProcessingWorker : BackgroundService
-{
-    private readonly IImageJobQueue queue;
-    private readonly IImageJobRepository repository;
-    private readonly IImageProcessor processor;
+namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
 
-    public ImageProcessingWorker(IImageJobQueue queue, IImageJobRepository repository, IImageProcessor processor)
-    {
-        this.queue = queue;
-        this.repository = repository;
-        this.processor = processor;
-    }
+public sealed class ImageProcessingWorker(IImageJobQueue queue, IImageJobRepository repository, IImageProcessor processor) : BackgroundService
+{
+    private readonly IImageJobQueue queue = queue;
+    private readonly IImageJobRepository repository = repository;
+    private readonly IImageProcessor processor = processor;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

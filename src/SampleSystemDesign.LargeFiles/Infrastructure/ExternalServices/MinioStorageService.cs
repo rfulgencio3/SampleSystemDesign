@@ -1,8 +1,8 @@
-namespace SampleSystemDesign.LargeFiles.Infrastructure.ExternalServices;
-
 using Minio;
 using Minio.DataModel.Args;
 using SampleSystemDesign.LargeFiles.Application.Interfaces;
+
+namespace SampleSystemDesign.LargeFiles.Infrastructure.ExternalServices;
 
 public sealed class MinioStorageService : IStorageService
 {
@@ -14,9 +14,9 @@ public sealed class MinioStorageService : IStorageService
 
     public MinioStorageService(IMinioClient client, string bucket, TimeSpan urlTtl)
     {
-        if (client is null) throw new ArgumentNullException(nameof(client));
+        ArgumentNullException.ThrowIfNull(client);
         if (string.IsNullOrWhiteSpace(bucket)) throw new ArgumentException("Bucket is required.", nameof(bucket));
-        if (urlTtl <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(urlTtl));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(urlTtl, TimeSpan.Zero);
 
         this.client = client;
         this.bucket = bucket;
@@ -62,11 +62,11 @@ public sealed class MinioStorageService : IStorageService
             if (bucketReady) return;
 
             var existsArgs = new BucketExistsArgs().WithBucket(bucket);
-            var exists = await client.BucketExistsAsync(existsArgs);
+            var exists = await client.BucketExistsAsync(existsArgs, cancellationToken);
             if (!exists)
             {
                 var makeArgs = new MakeBucketArgs().WithBucket(bucket);
-                await client.MakeBucketAsync(makeArgs);
+                await client.MakeBucketAsync(makeArgs, cancellationToken);
             }
 
             bucketReady = true;

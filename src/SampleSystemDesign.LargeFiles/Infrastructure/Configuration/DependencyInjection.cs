@@ -1,5 +1,3 @@
-namespace SampleSystemDesign.LargeFiles.Infrastructure.Configuration;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
@@ -9,11 +7,13 @@ using SampleSystemDesign.LargeFiles.Domain.Interfaces;
 using SampleSystemDesign.LargeFiles.Infrastructure.ExternalServices;
 using SampleSystemDesign.LargeFiles.Infrastructure.Persistence;
 
+namespace SampleSystemDesign.LargeFiles.Infrastructure.Configuration;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddLargeFiles(this IServiceCollection services, IConfiguration configuration)
     {
-        if (configuration is null) throw new ArgumentNullException(nameof(configuration));
+        ArgumentNullException.ThrowIfNull(configuration);
 
         var connectionString = configuration.GetConnectionString("Postgres")
             ?? throw new InvalidOperationException("Postgres connection string is required.");
@@ -35,7 +35,7 @@ public static class DependencyInjection
         }
 
         services.AddSingleton<IMinioClient>(client.Build());
-        services.AddSingleton<IAssetRepository>(_ => new PostgresAssetRepository(connectionString));
+        services.AddSingleton<IAssetRepository>(_ => new DatabaseAssetRepository(connectionString));
         services.AddSingleton<IStorageService>(sp => new MinioStorageService(sp.GetRequiredService<IMinioClient>(), bucket, TimeSpan.FromMinutes(ttlMinutes)));
         services.AddSingleton<GenerateUploadUrlCommandHandler>();
         services.AddSingleton<GenerateDownloadUrlQueryHandler>();

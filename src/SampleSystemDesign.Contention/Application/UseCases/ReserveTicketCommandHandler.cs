@@ -1,9 +1,9 @@
-namespace SampleSystemDesign.Contention.Application.UseCases;
-
 using SampleSystemDesign.Contention.Application.DTOs;
 using SampleSystemDesign.Contention.Application.Interfaces;
 using SampleSystemDesign.Contention.Domain.Entities;
 using SampleSystemDesign.Contention.Domain.Interfaces;
+
+namespace SampleSystemDesign.Contention.Application.UseCases;
 
 public sealed class ReserveTicketCommandHandler
 {
@@ -20,7 +20,7 @@ public sealed class ReserveTicketCommandHandler
         IReservationWindow reservationWindow,
         int maxRetries = 3)
     {
-        if (maxRetries <= 0) throw new ArgumentOutOfRangeException(nameof(maxRetries));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maxRetries);
 
         this.inventoryRepository = inventoryRepository;
         this.reservationRepository = reservationRepository;
@@ -31,7 +31,7 @@ public sealed class ReserveTicketCommandHandler
 
     public async Task<ReserveTicketResult> HandleAsync(ReserveTicketCommand command, CancellationToken cancellationToken = default)
     {
-        if (command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
         if (command.EventId == Guid.Empty) throw new ArgumentException("Event ID is required.", nameof(command));
         if (string.IsNullOrWhiteSpace(command.UserId)) throw new ArgumentException("User ID is required.", nameof(command));
         if (reservationWindow.HoldDuration <= TimeSpan.Zero)

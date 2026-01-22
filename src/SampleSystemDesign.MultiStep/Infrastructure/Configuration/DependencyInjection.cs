@@ -1,5 +1,3 @@
-namespace SampleSystemDesign.MultiStep.Infrastructure.Configuration;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleSystemDesign.MultiStep.Application.Interfaces;
@@ -7,6 +5,8 @@ using SampleSystemDesign.MultiStep.Application.UseCases;
 using SampleSystemDesign.MultiStep.Domain.Interfaces;
 using SampleSystemDesign.MultiStep.Infrastructure.ExternalServices;
 using SampleSystemDesign.MultiStep.Infrastructure.Persistence;
+
+namespace SampleSystemDesign.MultiStep.Infrastructure.Configuration;
 
 public static class DependencyInjection
 {
@@ -23,7 +23,7 @@ public static class DependencyInjection
         var password = configuration["RabbitMq:Password"] ?? "guest";
         var queue = configuration["RabbitMq:Queue"] ?? "checkout.events";
 
-        services.AddSingleton<IOrderRepository>(_ => new PostgresOrderRepository(connectionString));
+        services.AddSingleton<IOrderRepository>(_ => new DatabaseOrderRepository(connectionString));
         services.AddSingleton<IPaymentService>(_ => new SimulatedPaymentService());
         services.AddSingleton<IInventoryService>(_ => new SimulatedInventoryService());
         services.AddSingleton<INotificationService>(_ => new SimulatedNotificationService());

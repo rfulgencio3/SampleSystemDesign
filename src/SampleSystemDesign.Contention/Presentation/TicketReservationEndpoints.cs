@@ -1,9 +1,9 @@
-namespace SampleSystemDesign.Contention.Presentation;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using SampleSystemDesign.Contention.Application.DTOs;
 using SampleSystemDesign.Contention.Application.UseCases;
+
+namespace SampleSystemDesign.Contention.Presentation;
 
 public static class TicketReservationEndpoints
 {

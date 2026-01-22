@@ -1,12 +1,12 @@
-namespace SampleSystemDesign.Contention.Infrastructure.ExternalServices;
-
 using SampleSystemDesign.Contention.Application.Interfaces;
+
+namespace SampleSystemDesign.Contention.Infrastructure.ExternalServices;
 
 public sealed class DefaultReservationWindow : IReservationWindow
 {
     public DefaultReservationWindow(TimeSpan holdDuration)
     {
-        if (holdDuration <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(holdDuration));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(holdDuration, TimeSpan.Zero);
         HoldDuration = holdDuration;
     }
 

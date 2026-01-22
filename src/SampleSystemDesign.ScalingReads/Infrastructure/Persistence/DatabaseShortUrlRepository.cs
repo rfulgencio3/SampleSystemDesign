@@ -4,11 +4,11 @@ using Npgsql;
 using SampleSystemDesign.ScalingReads.Domain.Entities;
 using SampleSystemDesign.ScalingReads.Domain.Interfaces;
 
-public sealed class PostgresShortUrlRepository : IShortUrlRepository
+public sealed class DatabaseShortUrlRepository : IShortUrlRepository
 {
     private readonly string connectionString;
 
-    public PostgresShortUrlRepository(string connectionString)
+    public DatabaseShortUrlRepository(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {

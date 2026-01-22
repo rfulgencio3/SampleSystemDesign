@@ -1,6 +1,6 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
-
 using SampleSystemDesign.LongRunning.Application.Interfaces;
+
+namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
 
 public sealed class SimulatedImageProcessor : IImageProcessor
 {
@@ -9,7 +9,7 @@ public sealed class SimulatedImageProcessor : IImageProcessor
 
     public SimulatedImageProcessor(TimeSpan processingTime, string resultBaseUrl)
     {
-        if (processingTime <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(processingTime));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(processingTime, TimeSpan.Zero);
         if (string.IsNullOrWhiteSpace(resultBaseUrl)) throw new ArgumentException("Result base URL is required.", nameof(resultBaseUrl));
 
         this.processingTime = processingTime;

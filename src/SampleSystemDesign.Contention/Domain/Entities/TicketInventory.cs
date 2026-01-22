@@ -6,13 +6,13 @@ public sealed class TicketInventory
     {
         if (id == Guid.Empty) throw new ArgumentException("Id must not be empty.", nameof(id));
         if (eventId == Guid.Empty) throw new ArgumentException("Event ID must not be empty.", nameof(eventId));
-        if (totalTickets < 0) throw new ArgumentOutOfRangeException(nameof(totalTickets));
+        ArgumentOutOfRangeException.ThrowIfNegative(totalTickets);
         if (availableTickets < 0 || availableTickets > totalTickets)
         {
             throw new ArgumentOutOfRangeException(nameof(availableTickets));
         }
 
-        if (version < 0) throw new ArgumentOutOfRangeException(nameof(version));
+        ArgumentOutOfRangeException.ThrowIfNegative(version);
 
         Id = id;
         EventId = eventId;

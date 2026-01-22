@@ -1,24 +1,18 @@
-namespace SampleSystemDesign.LargeFiles.Application.UseCases;
-
 using SampleSystemDesign.LargeFiles.Application.DTOs;
 using SampleSystemDesign.LargeFiles.Application.Interfaces;
 using SampleSystemDesign.LargeFiles.Domain.Entities;
 using SampleSystemDesign.LargeFiles.Domain.Interfaces;
 
-public sealed class GenerateUploadUrlCommandHandler
-{
-    private readonly IAssetRepository assetRepository;
-    private readonly IStorageService storageService;
+namespace SampleSystemDesign.LargeFiles.Application.UseCases;
 
-    public GenerateUploadUrlCommandHandler(IAssetRepository assetRepository, IStorageService storageService)
-    {
-        this.assetRepository = assetRepository;
-        this.storageService = storageService;
-    }
+public sealed class GenerateUploadUrlCommandHandler(IAssetRepository assetRepository, IStorageService storageService)
+{
+    private readonly IAssetRepository assetRepository = assetRepository;
+    private readonly IStorageService storageService = storageService;
 
     public async Task<UploadUrlResult> HandleAsync(GenerateUploadUrlCommand command, CancellationToken cancellationToken = default)
     {
-        if (command is null) throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
         if (string.IsNullOrWhiteSpace(command.FileName)) throw new ArgumentException("File name is required.", nameof(command));
         if (string.IsNullOrWhiteSpace(command.ContentType)) throw new ArgumentException("Content type is required.", nameof(command));
         if (string.IsNullOrWhiteSpace(command.UploadedBy)) throw new ArgumentException("Uploaded by is required.", nameof(command));

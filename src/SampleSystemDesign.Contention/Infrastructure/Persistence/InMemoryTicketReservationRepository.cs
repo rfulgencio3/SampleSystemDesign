@@ -1,16 +1,16 @@
-namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
-
 using System.Collections.Concurrent;
 using SampleSystemDesign.Contention.Domain.Entities;
 using SampleSystemDesign.Contention.Domain.Interfaces;
 
+namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
+
 public sealed class InMemoryTicketReservationRepository : ITicketReservationRepository
 {
-    private readonly ConcurrentBag<TicketReservation> reservations = new();
+    private readonly ConcurrentBag<TicketReservation> reservations = [];
 
     public Task SaveAsync(TicketReservation reservation, CancellationToken cancellationToken = default)
     {
-        if (reservation is null) throw new ArgumentNullException(nameof(reservation));
+        ArgumentNullException.ThrowIfNull(reservation);
 
         reservations.Add(reservation);
         return Task.CompletedTask;

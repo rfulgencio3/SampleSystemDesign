@@ -1,14 +1,14 @@
-namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
-
 using Npgsql;
 using SampleSystemDesign.Contention.Domain.Entities;
 using SampleSystemDesign.Contention.Domain.Interfaces;
 
-public sealed class PostgresTicketReservationRepository : ITicketReservationRepository
+namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
+
+public sealed class DatabaseTicketReservationRepository : ITicketReservationRepository
 {
     private readonly string connectionString;
 
-    public PostgresTicketReservationRepository(string connectionString)
+    public DatabaseTicketReservationRepository(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {
@@ -21,7 +21,7 @@ public sealed class PostgresTicketReservationRepository : ITicketReservationRepo
 
     public async Task SaveAsync(TicketReservation reservation, CancellationToken cancellationToken = default)
     {
-        if (reservation is null) throw new ArgumentNullException(nameof(reservation));
+        ArgumentNullException.ThrowIfNull(reservation);
 
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);

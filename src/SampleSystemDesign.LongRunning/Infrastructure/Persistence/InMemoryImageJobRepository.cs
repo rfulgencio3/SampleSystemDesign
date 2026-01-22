@@ -1,8 +1,8 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.Persistence;
-
 using System.Collections.Concurrent;
 using SampleSystemDesign.LongRunning.Domain.Entities;
 using SampleSystemDesign.LongRunning.Domain.Interfaces;
+
+namespace SampleSystemDesign.LongRunning.Infrastructure.Persistence;
 
 public sealed class InMemoryImageJobRepository : IImageJobRepository
 {
@@ -16,7 +16,7 @@ public sealed class InMemoryImageJobRepository : IImageJobRepository
 
     public Task SaveAsync(ImageJob job, CancellationToken cancellationToken = default)
     {
-        if (job is null) throw new ArgumentNullException(nameof(job));
+        ArgumentNullException.ThrowIfNull(job);
 
         jobs[job.Id] = job;
         return Task.CompletedTask;
@@ -24,7 +24,7 @@ public sealed class InMemoryImageJobRepository : IImageJobRepository
 
     public Task UpdateAsync(ImageJob job, CancellationToken cancellationToken = default)
     {
-        if (job is null) throw new ArgumentNullException(nameof(job));
+        ArgumentNullException.ThrowIfNull(job);
 
         jobs[job.Id] = job;
         return Task.CompletedTask;

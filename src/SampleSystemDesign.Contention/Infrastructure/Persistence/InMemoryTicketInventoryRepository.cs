@@ -1,12 +1,12 @@
-namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
-
 using SampleSystemDesign.Contention.Domain.Entities;
 using SampleSystemDesign.Contention.Domain.Interfaces;
 
+namespace SampleSystemDesign.Contention.Infrastructure.Persistence;
+
 public sealed class InMemoryTicketInventoryRepository : ITicketInventoryRepository
 {
-    private readonly object syncRoot = new();
-    private readonly Dictionary<Guid, TicketInventory> inventories = new();
+    private readonly Lock syncRoot = new();
+    private readonly Dictionary<Guid, TicketInventory> inventories = [];
 
     public Task<TicketInventory?> GetByEventIdAsync(Guid eventId, CancellationToken cancellationToken = default)
     {
@@ -21,7 +21,7 @@ public sealed class InMemoryTicketInventoryRepository : ITicketInventoryReposito
 
     public Task SaveAsync(TicketInventory inventory, CancellationToken cancellationToken = default)
     {
-        if (inventory is null) throw new ArgumentNullException(nameof(inventory));
+        ArgumentNullException.ThrowIfNull(inventory);
 
         lock (syncRoot)
         {
@@ -33,7 +33,7 @@ public sealed class InMemoryTicketInventoryRepository : ITicketInventoryReposito
 
     public Task<bool> TryUpdateAsync(TicketInventory updatedInventory, int expectedVersion, CancellationToken cancellationToken = default)
     {
-        if (updatedInventory is null) throw new ArgumentNullException(nameof(updatedInventory));
+        ArgumentNullException.ThrowIfNull(updatedInventory);
 
         var updated = false;
 

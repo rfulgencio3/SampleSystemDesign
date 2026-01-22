@@ -1,8 +1,8 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
-
 using System.Text;
 using RabbitMQ.Client;
 using SampleSystemDesign.LongRunning.Application.Interfaces;
+
+namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
 
 public sealed class RabbitMqImageJobQueue : IImageJobQueue, IDisposable
 {

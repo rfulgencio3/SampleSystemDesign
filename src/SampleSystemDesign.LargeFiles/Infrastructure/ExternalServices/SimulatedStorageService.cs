@@ -1,6 +1,6 @@
-namespace SampleSystemDesign.LargeFiles.Infrastructure.ExternalServices;
-
 using SampleSystemDesign.LargeFiles.Application.Interfaces;
+
+namespace SampleSystemDesign.LargeFiles.Infrastructure.ExternalServices;
 
 public sealed class SimulatedStorageService : IStorageService
 {
@@ -10,7 +10,7 @@ public sealed class SimulatedStorageService : IStorageService
     public SimulatedStorageService(string baseUrl, TimeSpan urlTtl)
     {
         if (string.IsNullOrWhiteSpace(baseUrl)) throw new ArgumentException("Base URL is required.", nameof(baseUrl));
-        if (urlTtl <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(urlTtl));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(urlTtl, TimeSpan.Zero);
 
         this.baseUrl = baseUrl.TrimEnd('/');
         this.urlTtl = urlTtl;

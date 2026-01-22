@@ -1,8 +1,8 @@
-namespace SampleSystemDesign.LargeFiles.Infrastructure.Persistence;
-
 using System.Collections.Concurrent;
 using SampleSystemDesign.LargeFiles.Domain.Entities;
 using SampleSystemDesign.LargeFiles.Domain.Interfaces;
+
+namespace SampleSystemDesign.LargeFiles.Infrastructure.Persistence;
 
 public sealed class InMemoryAssetRepository : IAssetRepository
 {
@@ -16,7 +16,7 @@ public sealed class InMemoryAssetRepository : IAssetRepository
 
     public Task SaveAsync(Asset asset, CancellationToken cancellationToken = default)
     {
-        if (asset is null) throw new ArgumentNullException(nameof(asset));
+        ArgumentNullException.ThrowIfNull(asset);
 
         assets[asset.Id] = asset;
         return Task.CompletedTask;

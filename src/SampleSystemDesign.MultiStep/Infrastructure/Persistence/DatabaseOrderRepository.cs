@@ -6,12 +6,12 @@ using SampleSystemDesign.MultiStep.Domain.Interfaces;
 
 namespace SampleSystemDesign.MultiStep.Infrastructure.Persistence;
 
-public sealed class PostgresOrderRepository : IOrderRepository
+public sealed class DatabaseOrderRepository : IOrderRepository
 {
     private readonly string connectionString;
     private readonly JsonSerializerOptions jsonOptions = new(JsonSerializerDefaults.Web);
 
-    public PostgresOrderRepository(string connectionString)
+    public DatabaseOrderRepository(string connectionString)
     {
         if (string.IsNullOrWhiteSpace(connectionString))
         {

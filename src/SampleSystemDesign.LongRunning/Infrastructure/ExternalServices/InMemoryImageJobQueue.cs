@@ -1,7 +1,7 @@
-namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
-
 using System.Threading.Channels;
 using SampleSystemDesign.LongRunning.Application.Interfaces;
+
+namespace SampleSystemDesign.LongRunning.Infrastructure.ExternalServices;
 
 public sealed class InMemoryImageJobQueue : IImageJobQueue
 {
@@ -9,7 +9,7 @@ public sealed class InMemoryImageJobQueue : IImageJobQueue
 
     public InMemoryImageJobQueue(int capacity)
     {
-        if (capacity <= 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
 
         var options = new BoundedChannelOptions(capacity)
         {

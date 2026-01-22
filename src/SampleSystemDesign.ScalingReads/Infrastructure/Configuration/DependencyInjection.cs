@@ -1,5 +1,3 @@
-namespace SampleSystemDesign.ScalingReads.Infrastructure.Configuration;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleSystemDesign.ScalingReads.Application.Interfaces;
@@ -8,6 +6,8 @@ using SampleSystemDesign.ScalingReads.Domain.Interfaces;
 using SampleSystemDesign.ScalingReads.Infrastructure.ExternalServices;
 using SampleSystemDesign.ScalingReads.Infrastructure.Persistence;
 using StackExchange.Redis;
+
+namespace SampleSystemDesign.ScalingReads.Infrastructure.Configuration;
 
 public static class DependencyInjection
 {
@@ -33,7 +33,7 @@ public static class DependencyInjection
                 TimeSpan.FromMinutes(ttlMinutes)));
         services.AddSingleton<IShortUrlRepository>(sp =>
             new RedisShortUrlCache(
-                new PostgresShortUrlRepository(connectionString),
+                new DatabaseShortUrlRepository(connectionString),
                 sp.GetRequiredService<IShortUrlCache>(),
                 sp.GetRequiredService<IClock>()));
         services.AddSingleton<GetOriginalUrlQueryHandler>();

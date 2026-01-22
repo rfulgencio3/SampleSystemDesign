@@ -1,5 +1,3 @@
-namespace SampleSystemDesign.ScalingWrites.Infrastructure.Configuration;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleSystemDesign.ScalingWrites.Application.Interfaces;
@@ -7,6 +5,8 @@ using SampleSystemDesign.ScalingWrites.Application.UseCases;
 using SampleSystemDesign.ScalingWrites.Domain.Interfaces;
 using SampleSystemDesign.ScalingWrites.Infrastructure.ExternalServices;
 using SampleSystemDesign.ScalingWrites.Infrastructure.Persistence;
+
+namespace SampleSystemDesign.ScalingWrites.Infrastructure.Configuration;
 
 public static class DependencyInjection
 {
@@ -24,7 +24,7 @@ public static class DependencyInjection
 
         services.AddSingleton(rabbitSettings);
         services.AddSingleton<ITelemetryQueueProducer, RabbitMqTelemetryQueueProducer>();
-        services.AddSingleton<ITelemetryRepository>(_ => new PostgresShardedTelemetryRepository(connectionString, shardCount));
+        services.AddSingleton<ITelemetryRepository>(_ => new DatabaseShardedTelemetryRepository(connectionString, shardCount));
         services.AddSingleton<IngestTelemetryCommandHandler>();
         services.AddHostedService(sp => new RabbitMqTelemetryQueueConsumer(rabbitSettings, sp.GetRequiredService<ITelemetryRepository>(), batchSize));
 

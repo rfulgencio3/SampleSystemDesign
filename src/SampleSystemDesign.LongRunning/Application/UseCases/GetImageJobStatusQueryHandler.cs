@@ -1,16 +1,11 @@
-namespace SampleSystemDesign.LongRunning.Application.UseCases;
-
 using SampleSystemDesign.LongRunning.Application.DTOs;
 using SampleSystemDesign.LongRunning.Domain.Interfaces;
 
-public sealed class GetImageJobStatusQueryHandler
-{
-    private readonly IImageJobRepository repository;
+namespace SampleSystemDesign.LongRunning.Application.UseCases;
 
-    public GetImageJobStatusQueryHandler(IImageJobRepository repository)
-    {
-        this.repository = repository;
-    }
+public sealed class GetImageJobStatusQueryHandler(IImageJobRepository repository)
+{
+    private readonly IImageJobRepository repository = repository;
 
     public async Task<ImageJobStatusResult> HandleAsync(GetImageJobStatusQuery query, CancellationToken cancellationToken = default)
     {

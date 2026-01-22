@@ -1,6 +1,6 @@
-namespace SampleSystemDesign.Contention.Infrastructure.ExternalServices;
-
 using SampleSystemDesign.Contention.Application.Interfaces;
+
+namespace SampleSystemDesign.Contention.Infrastructure.ExternalServices;
 
 public sealed class SystemClock : IClock
 {
