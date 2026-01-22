@@ -2,6 +2,7 @@ namespace SampleSystemDesign.MultiStep.Infrastructure.Persistence;
 
 using System.Text.Json;
 using Npgsql;
+using NpgsqlTypes;
 using SampleSystemDesign.MultiStep.Domain.Entities;
 using SampleSystemDesign.MultiStep.Domain.Interfaces;
 
@@ -71,7 +72,8 @@ public sealed class PostgresOrderRepository : IOrderRepository
         command.Parameters.AddWithValue("id", order.Id);
         command.Parameters.AddWithValue("status", order.Status.ToString());
         command.Parameters.AddWithValue("total", order.Total);
-        command.Parameters.AddWithValue("items", SerializeItems(order.Items));
+        var itemsJson = SerializeItems(order.Items);
+        command.Parameters.Add("items", NpgsqlDbType.Jsonb).Value = itemsJson;
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
