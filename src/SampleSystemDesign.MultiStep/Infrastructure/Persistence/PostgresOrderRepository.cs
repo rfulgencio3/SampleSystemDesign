@@ -1,9 +1,10 @@
-namespace SampleSystemDesign.MultiStep.Infrastructure.Persistence;
-
 using System.Text.Json;
 using Npgsql;
+using NpgsqlTypes;
 using SampleSystemDesign.MultiStep.Domain.Entities;
 using SampleSystemDesign.MultiStep.Domain.Interfaces;
+
+namespace SampleSystemDesign.MultiStep.Infrastructure.Persistence;
 
 public sealed class PostgresOrderRepository : IOrderRepository
 {
@@ -45,7 +46,7 @@ public sealed class PostgresOrderRepository : IOrderRepository
         var status = Enum.Parse<OrderStatus>(statusText, ignoreCase: true);
         var total = reader.GetDecimal(2);
         var itemsJson = reader.GetString(3);
-        var itemsPayload = JsonSerializer.Deserialize<List<OrderItemPayload>>(itemsJson, jsonOptions) ?? new List<OrderItemPayload>();
+        var itemsPayload = JsonSerializer.Deserialize<List<OrderItemPayload>>(itemsJson, jsonOptions) ?? [];
         var items = itemsPayload.Select(item => new OrderItem(item.Sku, item.Quantity, item.UnitPrice)).ToArray();
 
         return new Order(reader.GetGuid(0), status, items, total);
@@ -53,7 +54,7 @@ public sealed class PostgresOrderRepository : IOrderRepository
 
     public async Task SaveAsync(Order order, CancellationToken cancellationToken = default)
     {
-        if (order is null) throw new ArgumentNullException(nameof(order));
+        ArgumentNullException.ThrowIfNull(order);
 
         await using var connection = new NpgsqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);
@@ -71,7 +72,8 @@ public sealed class PostgresOrderRepository : IOrderRepository
         command.Parameters.AddWithValue("id", order.Id);
         command.Parameters.AddWithValue("status", order.Status.ToString());
         command.Parameters.AddWithValue("total", order.Total);
-        command.Parameters.AddWithValue("items", SerializeItems(order.Items));
+        var itemsJson = SerializeItems(order.Items);
+        command.Parameters.Add("items", NpgsqlDbType.Jsonb).Value = itemsJson;
 
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
