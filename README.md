@@ -92,6 +92,7 @@ dotnet run --project src/SampleSystemDesign.ScalingReads -- --urls http://localh
 ## Swagger
 All HTTP APIs expose Swagger UI at `/swagger` when `ASPNETCORE_ENVIRONMENT=Development` (default for local runs).
 Example: `http://localhost:5101/swagger`.
+The IDE launch profiles (`launchSettings.json`) set `launchUrl` to `swagger` so the browser opens on the UI automatically.
 
 ## Quick Manual Checks
 - ScalingReads: `GET http://localhost:5101/r/sched` (seeded in `Program.cs`).
