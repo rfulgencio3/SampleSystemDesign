@@ -60,6 +60,12 @@ High-level flow with a compose stack:
 2) Each project reads its connection settings (env vars or appsettings).
 3) Run the project and validate the endpoints/flows below.
 
+## Resource Provisioning
+The `docker-compose.yml` only starts the infrastructure services. Each application provisions its own resources on startup:
+- RabbitMQ queues are declared by the services (no custom exchanges or topics).
+- Postgres tables are created by the repositories.
+- MinIO buckets are created on demand by the storage service.
+
 ## Local Ports (suggested)
 If you run multiple services at once, use explicit ports:
 - ScalingReads: `http://localhost:5101`
