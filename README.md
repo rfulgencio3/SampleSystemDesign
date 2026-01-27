@@ -1,4 +1,5 @@
 # SampleSystemDesign
+[English](README.md) | [Portuguese (pt-BR)](README.pt-BR.md)
 
 ## Motivations
 - Practice system design patterns with small, focused .NET 10 services.
